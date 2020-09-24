@@ -4,7 +4,6 @@ const { cypherKey } = require('../auth/auth');
 const { writeClientData, verifyAPIKey, getClientData, refreshClientCount } = require('../controller/controller.client');
 const { createUser, verifyUser } = require('../controller/controller.credential');
 
-
 const router = express.Router()
 
 async function loginApplication(req, res) {
@@ -32,7 +31,11 @@ function createNewUser(req, res) {
         return;
     }
     createUser(req.body);
-    res.send(`User created`);
+    const { username } = req.body;
+    const token = jwt.sign({ username }, 'NIA', {
+        expiresIn: '1h'
+    })
+    res.send(`User created - JWT: ${token}`);
 }
 
 function createNewClient(req, res) {
