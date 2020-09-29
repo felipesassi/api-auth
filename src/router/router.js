@@ -64,7 +64,7 @@ function createNewClient(req, res) {
     const apiKey = cypherKey(username);
     const data = {apikey: apiKey, permission, count, maxCount};
     writeClientData(data);
-    res.send(`API Key created - ${apiKey}`);
+    res.json({'message': 'API Key created', 'apikey': apiKey});
 }
 
 async function protectedRoute_1 (req, res) {
