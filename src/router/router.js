@@ -10,9 +10,9 @@ async function loginApplication(req, res) {
     const { username } = req.body;
     if (await verifyUser(req.body)) {
         const token = jwt.sign({ username }, 'NIA', {
-            expiresIn: '1h'
+            expiresIn: '24h'
         })
-        res.send(`Authenticated - JWT: ${token}`);
+        res.json({'token': token});
     }
     else {
         res.status(401).send('Invalid username or password')
@@ -35,7 +35,7 @@ function createNewUser(req, res) {
     const token = jwt.sign({ username }, 'NIA', {
         expiresIn: '1h'
     })
-    res.send(`User created - JWT: ${token}`);
+    res.json({'message': 'User created', 'token': token});
 }
 
 function createNewClient(req, res) {

@@ -1,4 +1,3 @@
-const { create } = require('../model/model.credentials');
 const AuthAdmins = require('../model/model.credentials');
 
 const createUser = async (data) => {
