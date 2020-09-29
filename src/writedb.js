@@ -1,6 +1,7 @@
 const { createUser } = require('./controller/controller.credential');
+const CryptoJS = require('crypto-js');
 
 createUser({
-    username: 'adm1n',
-    password: 'adm1n'
+    username: 'admin',
+    password: CryptoJS.SHA256('admin').toString()
 })

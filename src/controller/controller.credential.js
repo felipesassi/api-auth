@@ -1,7 +1,25 @@
 const AuthAdmins = require('../model/model.credentials');
+const { unsubscribe } = require('../router/router');
 
 const createUser = async (data) => {
     await AuthAdmins.create(data);
+}
+
+const userExists = async (data) => {
+    const { username } = data;
+
+    const user = await AuthAdmins.findAll({
+        where: {
+            username
+        }
+    })
+
+    if (user.length != 0) {
+        return false;
+    }
+    else {
+        return true;
+    }
 }
 
 const verifyUser = async (data) => {
@@ -25,5 +43,6 @@ const verifyUser = async (data) => {
 
 module.exports = {
     createUser,
+    userExists,
     verifyUser,
 }

@@ -1,14 +1,19 @@
 const express = require('express');
 const jwt = require('jsonwebtoken');
+const CryptoJS = require('crypto-js');
 const { cypherKey } = require('../auth/auth');
-const { writeClientData, verifyAPIKey, getClientData, refreshClientCount } = require('../controller/controller.client');
-const { createUser, verifyUser } = require('../controller/controller.credential');
+const { writeClientData, verifyAPIKey, clientExists, getClientData, refreshClientCount } = require('../controller/controller.client');
+const { createUser, userExists, verifyUser } = require('../controller/controller.credential');
 
 const router = express.Router()
 
 async function loginApplication(req, res) {
     const { username } = req.body;
-    if (await verifyUser(req.body)) {
+    const userInfo = {
+        'username': req.body.username,
+        'password': CryptoJS.SHA256(req.body.password).toString()
+    }
+    if (await verifyUser(userInfo)) {
         const token = jwt.sign({ username }, 'NIA', {
             expiresIn: '24h'
         })
@@ -30,7 +35,12 @@ function createNewUser(req, res) {
         res.status(401).send('Invalid JWT')
         return;
     }
-    createUser(req.body);
+    const userInfo = {
+        'username': req.body.username,
+        'password': CryptoJS.SHA256(req.body.password).toString()
+    }
+    if (userExists(req.body.username)){return res.status(401).send('Username already exists.')}
+    createUser(userInfo);
     const { username } = req.body;
     const token = jwt.sign({ username }, 'NIA', {
         expiresIn: '1h'
@@ -50,6 +60,7 @@ function createNewClient(req, res) {
         res.status(401).send('Invalid JWT')
         return;
     }
+
     const apiKey = cypherKey(username);
     const data = {apikey: apiKey, permission, count, maxCount};
     writeClientData(data);

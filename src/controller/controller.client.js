@@ -18,6 +18,23 @@ const verifyAPIKey = async (data) => {
     }    
 }
 
+const clientExists = async (data) => {
+    const { username } = data;
+
+    const user = await AuthUsers.findAll({
+        where: {
+            username
+        }
+    })
+
+    if (user.length != 0) {
+        return false;
+    }
+    else {
+        return true;
+    }
+}
+
 const getClientData = async (data) => {
     const userData = await AuthUsers.findAll({
         where: {
@@ -37,6 +54,7 @@ const refreshClientCount = async (count, apiKey) => {
 
 module.exports = {
     writeClientData,
+    clientExists,
     verifyAPIKey,
     getClientData,
     refreshClientCount
